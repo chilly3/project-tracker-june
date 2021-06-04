@@ -1,0 +1,53 @@
+{
+  "name": "project-tracker-june",
+  "version": "1.0.0",
+  "description": "Continuation of project-tracker development and refactoring",
+  "main": "webpack.config.js",
+  "scripts": {
+    "server": "nodemon ./server/app.js --watch server",
+    "client": "webpack -w",
+    "build": "webpack",
+    "watch": "webpack -w"  
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chilly3/project-tracker-june.git"
+  },
+  "keywords": [
+    "MERN"
+  ],
+  "author": "Dustin Knox",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chilly3/project-tracker-june/issues"
+  },
+  "homepage": "https://github.com/chilly3/project-tracker-june#readme",
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "@webpack-cli/generators": "^2.1.0",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.6",
+    "html-webpack-plugin": "^5.3.1",
+    "nodemon": "^2.0.7",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "async": "^3.2.0",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "dns-packet": "^1.3.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.11.1",
+    "luxon": "^1.27.0",
+    "mongoose": "^5.12.10",
+    "react": "^17.0.2",
+    "react-axios": "^2.0.5",
+    "react-dom": "^17.0.2",
+    "react-modal": "^3.13.1",
+    "react-router-dom": "^5.2.0"
+  }
+}
