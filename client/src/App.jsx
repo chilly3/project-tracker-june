@@ -72,7 +72,7 @@ const App = () => {
       
       const { created_at, email, id, last_heartbeat_at, last_plugin_name, last_project, photo } = resZero;
 
-      let activity = DateTime.fromISO(resFour.last_heartbeat_at).ts;
+      let activity = DateTime.fromISO(resFour.last_update).ts;
       let ago = DateTime.now().ts - activity;
       let db_user_update_moment = DateTime.now().minus(ago).toRelative();
 
@@ -81,7 +81,6 @@ const App = () => {
       let waka_user_update_moment = DateTime.now().minus(waka_ago).toRelative();
 
       const { best_day, days_including_holidays, days_minus_holidays, human_readable_daily_average_including_other_language, human_readable_range, human_readable_total_including_other_language, dependencies, editors, languages, machines, operating_systems, projects } = resOne
-
       const best = { date: best_day.date, text: best_day.text }
 
       const dependency = dependencies.map((dependency) => {
@@ -152,8 +151,10 @@ const App = () => {
         since_start: human_readable_range,
         total_time: human_readable_total_including_other_language,
         daily_average: human_readable_daily_average_including_other_language,
+        total_dailies: days_including_holidays,
         last_heartbeat_at: last_heartbeat_at,
         last_heartbeat_at_date: DateTime.fromISO(last_heartbeat_at).toISODate(),
+        last_update: DateTime.now(),
         last_editor_used: last_plugin_name,
         last_project: last_project,
         photo: photo,
@@ -166,6 +167,7 @@ const App = () => {
         operating_systems: operating_system,
         projects: project
       }
+
       setWaka_info(resMerge)
       setWaka_dailies(resTwo)
       setWaka_user_moment(waka_user_update_moment)
@@ -188,14 +190,19 @@ const App = () => {
     let split_i = user_split[1];
     let split_a = user_split[2];
     let split_s = user_split[3];
+    let at_index = split_e.indexOf('@');
+    let handle = split_e.slice(0, at_index);
     setUser({
       email: split_e,
       id: split_i,
       auth: split_a,
-      start: split_s
+      start: split_s,
+      handle: handle
     })
     setApp_view('form_set')
   }
+
+  console.log(user);
 
   let userSelect = user_list.length > 0 && user_list.map((selected, i) => {
     let {email, id, auth, start } = selected;
@@ -204,9 +211,20 @@ const App = () => {
     )
   }, this);
 
+  const change_user = () => {
+    setApp_view('no_user_selected')
+  }
+
   const no_user_selected = (
     <div>
       <h1 className="title">Project Tracker June</h1>
+      <nav className="navbar navbar-light">
+          <ul className="nav navbar-nav">
+            <li className="appnav">
+              <Link to="/" className="app-link">Home</Link>
+            </li>
+          </ul>
+        </nav>
       <div className="app-no-user">
       <form className="user-form">
         <label className="user-form-label"><i className="alert-dark strong">Select a user to get started:  </i></label>
@@ -224,6 +242,13 @@ const App = () => {
   const form_set = (
     <div>
       <h1 className="title">Project Tracker June</h1>
+      <nav className="navbar navbar-light">
+          <ul className="nav navbar-nav">
+            <li className="appnav">
+              <Link to="/" className="app-link">Home</Link>
+            </li>
+          </ul>
+        </nav>
       <div className="app-no-user">
       <form className="user-form" onSubmit={formGetWaka_info}>
         <label className="user-form-label"><i className="cc-0 strong">{user.email}</i></label>
@@ -240,8 +265,8 @@ const App = () => {
 
   const user_selected = (
     <div>
-      <h1 className="title">Project Tracker June</h1>
-      <div className="app-user"><i className="cc-0">{user.email}</i></div>
+      <div className="change-user-div"><button className="change-user-button" onClick={change_user}>Switch User</button></div>
+      <h2 className="title">Project Tracker June<br></br><i className="sub-title cc-0 smaller">{user.handle}</i></h2>
       <nav className="navbar navbar-light">
           <ul className="nav navbar-nav">
             <li className="appnav">
@@ -254,8 +279,8 @@ const App = () => {
         </nav>
       <div className="content">
       <Switch>
-        <Route exact path="/"><Home data={{ db_user_id, db_dailies, db_user, db_users, user, waka_info, waka_dailies }}/></Route>
-        <Route path="/user"><User data={{ db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_user_moment }}/></Route>
+        <Route exact path="/"><Home data={{ db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
+        <Route path="/user"><User data={{ db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
       </Switch>
       </div>
     </div>
