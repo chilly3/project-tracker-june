@@ -13,9 +13,16 @@ const App = () => {
   const history = useHistory();
 
   const [app_view, setApp_view] = useState('no_user_selected');
+  const [db_dailies, setDb_dailies] = useState('');
+  const [db_user_id, setDb_user_id] = useState('');
+  const [db_user_moment, setDb_user_moment] = useState('');
+  const [db_user, setDb_user] = useState('');
   const [db_users, setDb_users] = useState('');
+  const [user_model_ids, setUser_model_ids] = useState('');
   const [user, setUser] = useState('');
   const [waka_info, setWaka_info] = useState('');
+  const [waka_dailies, setWaka_dailies] = useState('');
+  const [waka_user_moment, setWaka_user_moment] = useState('');
 
   const getDb_users = () => {
     axios.get(`/db/user/list`)
@@ -26,7 +33,17 @@ const App = () => {
     axios.all([reqZero])
     .then(axios.spread((...responses) => {
       const resZero = responses[0].data
+      let db_ids = {};
+
+      const item = resZero.map((item) => {
+        const email = item.email;
+        const model_id = item._id;
+
+        db_ids[email] = model_id;
+      })
+
       setDb_users(resZero)
+      setUser_model_ids(db_ids)
     }))
     .catch(err => {
       console.log(err)
@@ -35,18 +52,34 @@ const App = () => {
 
   const formGetWaka_info = (event) => {
     event.preventDefault();
-    let range = 'all_time';
+    const range = 'all_time';
+    const model_id = user_model_ids[user.email];
+    const end_range = DateTime.now().toISODate();
+
     const reqZero = axios.get(`/api/v1/users/${user.id}/${user.auth}`)
     const reqOne = axios.get(`/api/v1/users/${user.id}/stats/${range}/${user.auth}`)
-    axios.all([reqZero, reqOne])
+    const reqTwo = axios.get(`/api/v1/users/${user.id}/summaries/${user.start}/${end_range}/${user.auth}`)
+    const reqThree = axios.get(`/db/daily/list/${model_id}`)
+    const reqFour = axios.get(`/db/user/${model_id}`)
+
+    axios.all([reqZero, reqOne, reqTwo, reqThree, reqFour])
     .then(axios.spread((...responses) => {
       const resZero = responses[0].data.data
       const resOne = responses[1].data.data
-      console.log(resZero)
-      console.log(resOne)
+      const resTwo = responses[2].data.data
+      const resThree = responses[3].data
+      const resFour = responses[4].data
       
       const { created_at, email, id, last_heartbeat_at, last_plugin_name, last_project, photo } = resZero;
-      
+
+      let activity = DateTime.fromISO(resFour.last_heartbeat_at).ts;
+      let ago = DateTime.now().ts - activity;
+      let db_user_update_moment = DateTime.now().minus(ago).toRelative();
+
+      let waka_activity = DateTime.fromISO(resZero.last_heartbeat_at).ts;
+      let waka_ago = DateTime.now().ts - waka_activity;
+      let waka_user_update_moment = DateTime.now().minus(waka_ago).toRelative();
+
       const { best_day, days_including_holidays, days_minus_holidays, human_readable_daily_average_including_other_language, human_readable_range, human_readable_total_including_other_language, dependencies, editors, languages, machines, operating_systems, projects } = resOne
 
       const best = { date: best_day.date, text: best_day.text }
@@ -119,7 +152,8 @@ const App = () => {
         since_start: human_readable_range,
         total_time: human_readable_total_including_other_language,
         daily_average: human_readable_daily_average_including_other_language,
-        last_heartbeat_at: DateTime.fromISO(last_heartbeat_at).toISODate(),
+        last_heartbeat_at: last_heartbeat_at,
+        last_heartbeat_at_date: DateTime.fromISO(last_heartbeat_at).toISODate(),
         last_editor_used: last_plugin_name,
         last_project: last_project,
         photo: photo,
@@ -133,6 +167,12 @@ const App = () => {
         projects: project
       }
       setWaka_info(resMerge)
+      setWaka_dailies(resTwo)
+      setWaka_user_moment(waka_user_update_moment)
+      setDb_dailies(resThree)
+      setDb_user_moment(db_user_update_moment)
+      setDb_user(resFour)
+      setDb_user_id(model_id)
       setApp_view('user_selected')
     }))
     .catch(err => {
@@ -142,6 +182,7 @@ const App = () => {
 
   const formSetUser = (event) => {
     event.preventDefault();
+
     let user_split = event.target.value.split(',');
     let split_e = user_split[0];
     let split_i = user_split[1];
@@ -213,8 +254,8 @@ const App = () => {
         </nav>
       <div className="content">
       <Switch>
-        <Route exact path="/"><Home data={{ db_users, user, waka_info }}/></Route>
-        <Route path="/user"><User data={{ db_users, user, waka_info }}/></Route>
+        <Route exact path="/"><Home data={{ db_user_id, db_dailies, db_user, db_users, user, waka_info, waka_dailies }}/></Route>
+        <Route path="/user"><User data={{ db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_user_moment }}/></Route>
       </Switch>
       </div>
     </div>

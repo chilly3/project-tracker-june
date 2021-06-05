@@ -8,7 +8,7 @@ const Home = ({ data }) => {
   const { url, path } = useRouteMatch();
 
   return (
-    <div className="content">
+    <div>
       <div>
         <div>
           <h3 className="content-title">Home</h3>

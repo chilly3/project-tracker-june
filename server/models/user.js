@@ -10,6 +10,7 @@ const UserSchema = new Schema({
   total_time: { type: String },
   daily_average: { type: String },
   last_heartbeat_at: { type: String },
+  last_heartbeat_at_date: { type: String },
   last_editor_used: { type: String },
   last_project: { type: String },
   photo: { type: String },
