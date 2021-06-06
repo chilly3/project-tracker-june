@@ -13,6 +13,7 @@ const App = () => {
   const history = useHistory();
 
   const [app_view, setApp_view] = useState('no_user_selected');
+  const [days_match, setDays_match] = useState('');
   const [db_dailies, setDb_dailies] = useState('');
   const [db_user_id, setDb_user_id] = useState('');
   const [db_user_moment, setDb_user_moment] = useState('');
@@ -167,7 +168,19 @@ const App = () => {
         operating_systems: operating_system,
         projects: project
       }
+      const db_days = resThree.length;
+      const waka_days = resTwo.length;
+      let days_condition;
 
+      if (db_days && db_days === waka_days) {
+        days_condition = "home_user_updated";
+      } else if (db_days < 1) {
+        days_condition = "add_user_dailies";
+      } else if (db_days !== waka_days) {
+        days_condition = "update_user_dailies";
+      }
+
+      setDays_match(days_condition)
       setWaka_info(resMerge)
       setWaka_dailies(resTwo)
       setWaka_user_moment(waka_user_update_moment)
@@ -201,8 +214,6 @@ const App = () => {
     })
     setApp_view('form_set')
   }
-
-  console.log(user);
 
   let userSelect = user_list.length > 0 && user_list.map((selected, i) => {
     let {email, id, auth, start } = selected;
@@ -279,7 +290,7 @@ const App = () => {
         </nav>
       <div className="content">
       <Switch>
-        <Route exact path="/"><Home data={{ db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
+        <Route exact path="/"><Home data={{ days_match, db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
         <Route path="/user"><User data={{ db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
       </Switch>
       </div>
