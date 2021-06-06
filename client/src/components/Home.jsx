@@ -10,6 +10,7 @@ const Home = ({ data }) => {
   const { days_match, db_dailies, db_user, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment } = data;
   
   const [home_view, setHome_view] = useState(days_match);
+  const [total_time_logged, setTotal_time_logged] = useState('')
   
   const addDb_user = () => {
     axios.post(`/db/user/add`, { users: [waka_info] })
@@ -117,7 +118,7 @@ const Home = ({ data }) => {
   const updateDb_user = () => {
     axios.put(`/db/user/update/${db_user_id}`, waka_info)
     .then(res => {
-      console.log(res)
+      setHome_view('home_user_refresh')
     })
     .catch(err => {
       console.log(err)
@@ -210,12 +211,38 @@ const Home = ({ data }) => {
     </div>
   )
 
+  const home_user_refresh = (
+    <div>
+    <hr></hr>
+    <div>
+      <h3 className="content-title">Home</h3>
+      <p>Welcome to Project Tracker Database, a basic website built with react, express, and mongoose for keeping track of coding projects.</p>
+      <div className="home-dynamics">
+      <ul className="v-nav">
+        <li className="v-item">Total Logged Time: <i className="alert-success">{db_user.total_time}</i></li>
+        <li className="v-item">Daily Records: <i className="alert-danger">{db_user.total_dailies}</i></li>
+        <li className="v-item">Projects: <i className="alert-danger">{db_user.projects.length}</i></li>
+        <li className="v-item">Languages:  <i className="alert-danger">{db_user.languages.length}</i></li>
+        <li className="v-item">Dependencies: <i className="alert-danger">{db_user.dependencies.length}</i></li>
+        <li className="v-item">Preferred OS: <i className="alert-info">{db_user.operating_systems[0].name}</i></li>
+        <li className="v-item">Preferred Editor: <i className="alert-info">{db_user.editors[0].name}</i></li>
+      </ul>
+      </div>
+      <div className="home-last-updated"><i className="alert-dark em">Success</i></div>
+    </div>
+    <div>
+    </div>
+  </div>
+  )
+
   if (home_view === "update_user_dailies") {
     return <div>{update_user_dailies}</div>
   } else if (home_view === "add_user_dailies") {
     return <div>{add_user_dailies}</div>
   } else if (home_view === "home_user_updated") {
     return <div>{home_user_updated}</div>
+  } else if (home_view === "home_user_refresh") {
+    return <div>{home_user_refresh}</div>
   }
 }
 
