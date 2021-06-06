@@ -180,6 +180,7 @@ const App = () => {
         days_condition = "update_user_dailies";
       }
 
+      console.log(resFour)
       setDays_match(days_condition)
       setWaka_info(resMerge)
       setWaka_dailies(resTwo)

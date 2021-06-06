@@ -57,7 +57,9 @@ router.put('/update/:dbuser', async (req, res) => {
       res.status(404).send({
         message: `Cannot update User with id: ${id}`
       });
-    } else res.send({ message: `User was updated successfully` });
+    } else {
+      return res.status(200).send(`User was updated successfully`);
+    }
   })
   .catch(err => {
     res.status(500).send({

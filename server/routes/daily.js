@@ -40,9 +40,9 @@ router.post('/add/:dbuser', (req, res, next) => {
   }
   try {
     Daily.collection.bulkWrite(bulkOps);
-    return res.status(200).send(`success`)
+    return res.status(200).send(`add dailies success`)
   } catch {
-  res.status(404).send({ error: "Can not complete daily list request" })
+  res.status(404).send({ error: `Can not complete add dailies request` })
   }
 });
 
@@ -51,12 +51,9 @@ router.post('/update/:dbuser', (req, res, next) => {
   const dbuser = req.params.dbuser;
   const postDailies = req.body;
   let bulkOps = [];
-
   for (var i = 0; i < postDailies.length; i++) {
-
     let current = postDailies[i];
     let daily = new Daily({ user: dbuser });
-    console.log(daily)
     let upsertDoc = {
       "updateOne": {
         "filter": { "waka_id": current.waka_id, "date": current.date },
@@ -65,13 +62,16 @@ router.post('/update/:dbuser', (req, res, next) => {
           "$setOnInsert": { "user": daily.user }
          },
         "upsert": true
-      }};
-      bulkOps.push(upsertDoc);
+      }
+    };
+    bulkOps.push(upsertDoc);
   }
-
-  Daily.collection.bulkWrite(bulkOps)
-    .then(bulkWriteOpResult => console.log('BULK update OK:', bulkWriteOpResult))
-    .catch(console.error.bind(console, 'BULK update error:'))
+  try {
+    Daily.collection.bulkWrite(bulkOps);
+    return res.status(200).send(`update dailies success`)
+  } catch {
+    res.status(404).send({ error: `Can not complete request` })
+  }
 });
 
 //GET request for all dailys for a given user
@@ -80,7 +80,7 @@ router.get('/list/:dbuser', async(req, res) => {
     const user_dailies = await Daily.find({ user: req.params.dbuser });
     return res.status(200).send(user_dailies);
   } catch {
-    res.status(404).send({ error: "Can not complete daily list request" })
+    res.status(404).send({ error: "Can not complete update dailies request" })
   }
 })
 
@@ -112,7 +112,7 @@ router.delete('/remove/:id', async (req, res) => {
     if (err) {
       return console.error(err);
     } else {
-      res.status(201).send(db_id)
+      res.status(201).send(`Deleted dailies for user: ${db_id}`)
       console.log(`Multiple documents for ${db_id} removed from Daily collection`)
     }
   })

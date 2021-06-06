@@ -115,13 +115,24 @@ const Home = ({ data }) => {
   }
 
   const updateDb_user = () => {
-    const reqZero = axios.put(`/db/user/update/${db_user_id}`, waka_info)
-    const reqOne = axios.post(`/db/daily/update/${db_user_id}`, dailies_parse)
+    axios.put(`/db/user/update/${db_user_id}`, waka_info)
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  const updateDb_user_dailies = () => {
+    const reqZero = axios.post(`/db/daily/update/${db_user_id}`, dailies_parse)
+    const reqOne = axios.put(`/db/user/update/${db_user_id}`, waka_info)
+
     axios.all([reqZero, reqOne])
     .then(axios.spread((...responses) => {
       const resZero = responses[0]
       const resOne = responses[1]
-      setHome_view('update_user_dailies')
+      setHome_view('home_user_updated')
     }))
     .catch(err => {
       console.log(err)
@@ -136,7 +147,7 @@ const Home = ({ data }) => {
       <div className="home-dynamics">
       <ul className="v-nav">
         <li className="v-item">Total Logged Time: <i className="alert-success">{db_user.total_time}</i></li>
-        <li className="v-item">Daily Records: <i className="alert-danger"></i></li>
+        <li className="v-item">Daily Records: <i className="alert-danger em">No daily records </i></li>
         <li className="v-item">Projects: <i className="alert-danger"></i></li>
         <li className="v-item">Languages:  <i className="alert-danger"></i></li>
         <li className="v-item">Dependencies: <i className="alert-danger"></i></li>
@@ -144,13 +155,13 @@ const Home = ({ data }) => {
         <li className="v-item">Preferred Editor: <i className="alert-info">{db_user.editors[0].name}</i></li>
       </ul>
       </div>
-      <div className="home-last-updated"><i className="alert-danger em strong">Database contains no dailies for this user </i><button className="button-update-db-user" onClick={addDb_dailies}>Add</button></div>
+      <div className="home-add-dailies">( <i className="alert-success">{waka_dailies.length} available Daily Records </i> ) <button className="button-add-db-dailies" onClick={addDb_dailies}>Import</button></div>
     </div>
     <div>
     </div>
   </div>
   )
-
+  console.log(db_user)
   const update_user_dailies = (
     <div>
       <hr></hr>
@@ -168,7 +179,7 @@ const Home = ({ data }) => {
           <li className="v-item">Preferred Editor: <i className="alert-info">{db_user.editors[0].name}</i></li>
         </ul>
         </div>
-        <div className="home-last-updated"><i className="alert-dark em">Database last updated {db_user_moment} </i><button className="button-update-db-user" onClick={updateDb_user}>Update</button></div>
+        <div className="home-last-updated"><i className="alert-dark em">Database last updated {db_user_moment} </i><button className="button-update-db-user" onClick={updateDb_user_dailies}>Update</button></div>
       </div>
       <div>
       </div>
@@ -192,7 +203,7 @@ const Home = ({ data }) => {
           <li className="v-item">Preferred Editor: <i className="alert-info">{db_user.editors[0].name}</i></li>
         </ul>
         </div>
-        <div className="home-last-updated"><i className="alert-dark em">Database last updated {db_user_moment} </i></div>
+        <div className="home-last-updated"><i className="alert-dark em">Database last updated {db_user_moment}  </i><button className="button-update-db-user" onClick={updateDb_user}>_</button></div>
       </div>
       <div>
       </div>
