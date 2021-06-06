@@ -180,7 +180,6 @@ const App = () => {
         days_condition = "update_user_dailies";
       }
 
-      console.log(resFour)
       setDays_match(days_condition)
       setWaka_info(resMerge)
       setWaka_dailies(resTwo)
@@ -292,7 +291,7 @@ const App = () => {
       <div className="content">
       <Switch>
         <Route exact path="/"><Home data={{ days_match, db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
-        <Route path="/user"><User data={{ db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
+        <Route path="/user"><User data={{ db_dailies, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
       </Switch>
       </div>
     </div>

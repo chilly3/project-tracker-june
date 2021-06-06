@@ -162,7 +162,7 @@ const Home = ({ data }) => {
     </div>
   </div>
   )
-  console.log(db_user)
+  
   const update_user_dailies = (
     <div>
       <hr></hr>
