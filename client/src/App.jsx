@@ -70,6 +70,8 @@ const App = () => {
       const resTwo = responses[2].data.data
       const resThree = responses[3].data
       const resFour = responses[4].data
+
+      console.log(resOne);
       
       const { created_at, email, id, last_heartbeat_at, last_plugin_name, last_project, photo } = resZero;
 
@@ -286,12 +288,16 @@ const App = () => {
             <li className="appnav">
               <Link to="/user" className="app-link">User</Link>
             </li>
+            <li className="appnav">
+              <Link to="/projects" className="app-link">Projects</Link>
+            </li>
           </ul>
         </nav>
       <div className="content">
       <Switch>
         <Route exact path="/"><Home data={{ days_match, db_dailies, db_user, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
         <Route path="/user"><User data={{ db_dailies, db_users, db_user_id, db_user_moment, user, waka_info, waka_dailies, waka_user_moment }}/></Route>
+        <Route path="/projects"><Projects data={{ }}/></Route>
       </Switch>
       </div>
     </div>
